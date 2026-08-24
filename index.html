@@ -741,8 +741,8 @@
     <!-- Interface 1 -->
     <div id="interface1" class="glass-card hidden">
       <h1 class="title-main" onclick="handleTitleTap()">To My Kismis <span class="glow-word">Didi</span> ✨</h1>
-      <div class="cursive-text">A Chotu Si Request 🌙</div>
-      <span class="highlight-quote">"Mujhse gussa hoke kahan jaogi? Manana to mujhe hi padega! ✨"</span>
+      <div class="cursive-text">Ek Choti Si Request 🌙</div>
+      <span class="highlight-quote">"Humse gussa hoke kahan jayenge? Manana to hmko hi padega! ✨"</span>
       <p class="message-body" id="text-if1"></p>
       <button class="btn-main" onclick="goToInterface2()">To Kismis didi ✨️🌙❤️</button>
       <div class="fft-visualizer-container">
@@ -760,10 +760,6 @@
         <div class="origami-heart-card" onclick="openOrigamiNote('promise')">
           <span class="origami-icon">💖</span>
           <span class="origami-label">Promise</span>
-        </div>
-        <div class="origami-heart-card" onclick="openOrigamiNote('memory')">
-          <span class="origami-icon">🌸</span>
-          <span class="origami-label">Memory</span>
         </div>
         <div class="origami-heart-card" onclick="openOrigamiNote('wish')">
           <span class="origami-icon">✨</span>
@@ -801,7 +797,7 @@ Aisa bilkul bhi nhi h jaisa aap soch rhe h...uss din bol diye the n wo ...ha maa
 Infact aap to unn sab me se ..the bessttt h sabse pyaari✨️✨️ aapko lagega jhuth bol rhe h par sachhii me.
 Aise gussa thodi n hote h ...ab se aisa nhi hoga pakkka 🤞
 
-Apna aur apne health ka dhyan rakhiye aur time pe khana aur kha liya kariye, aur reels dekhna bhi km kr dijiye.
+Apna aur apne health ka dhyan rakhiye aur time pe khana aur dwai kha liya kariye, aur reels dekhna bhi km kr dijiye.
 
 (Aur taunt na mara kariye ..🙂 plsss)
 
@@ -836,7 +832,7 @@ Good night✨️✨️</div>
     <div id="finalScreen" class="glass-card hidden">
       <div class="quotes-grid">
         <div class="heart-quote-badge">
-          💖 <em>"Gussa chhod bhi do na Didi, ab maaf bhi kar do!"</em>
+          💖 <em>"Gussa chhod bhi dijiye na Didi, ab maaf bhi kar dijiye!"</em>
         </div>
         <div class="heart-quote-badge">
           🌸 <em>"Duniya ki sabse cute aur best Didi meri hi hai."</em>
@@ -997,9 +993,8 @@ Good night✨️✨️</div>
 
     // Origami Fortune Notes
     const origamiNotes = {
-      promise: "Didi Promise: Aage se kabhi bina soche gussa nahi dilaunga, aur hamesha aapki har baat dhyan se sununga! 💖✨",
-      memory: "Sabse Best Memory: Jab bhi hum saath baith ke bina baat ke itna hasste the ki pet dukhne lagta tha! 🌸",
-      wish: "Secret Wish: Aap hamesha har din khilkhilati raho aur jo chaho wo aapko mile! Always shining Didi! 🌙✨"
+      promise: "Didi Promise: Aage se kabhi bina soche gussa nahi dilayenge, aur hamesha aapki har baat dhyan se sunenge! 💖✨",
+      wish: "Secret Wish: Aap hamesha har din khilkhilati raho aur jo chaho wo aapko mile! Always keep smiling and shining Didi! 🌙✨"
     };
 
     function openOrigamiNote(type) {
@@ -1107,7 +1102,7 @@ Good night✨️✨️</div>
         triggerHaptic([50, 40, 70]);
         playSong1();
         switchScreen('lockScreen', 'interface1', () => {
-          typeWriter('text-if1', 'Pata hai mujhse galti ho gayi aur aap gussa ho... par aapke bina bilkul achha nahi lagta. Ek baar ye pura surprise dekh lo please?');
+          typeWriter('text-if1', 'Pata hai humse galti ho gya aur aap gussa hai... par aapke bina bilkul achha nahi lagta. Ek baar ye pura  dekh lijiye please?');
         });
       } else {
         triggerSecurityCrash();
@@ -1188,7 +1183,7 @@ Good night✨️✨️</div>
         crossfadeToSong2();
         switchScreen('envelopeScreen', 'finalScreen', () => {
           document.getElementById('polaroidGallery').classList.add('animate-polaroids');
-          typeWriter('text-if4', 'Promise karta hu aage se itna pareshan nahi karunga. Always stay blessed, happy, and smiling!');
+          typeWriter('text-if4', 'Promise karte hai aage se aisa kbhi nhi karenge. Always stay blessed, happy, and smiling!');
         });
       }, 450);
     }
@@ -1249,7 +1244,7 @@ Good night✨️✨️</div>
       playSong1();
       triggerHaptic(40);
       switchScreen('finalScreen', 'interface1', () => {
-        typeWriter('text-if1', 'Pata hai mujhse galti ho gayi aur aap gussa ho... par aapke bina bilkul achha nahi lagta. Ek baar ye pura surprise dekh lo please?');
+        typeWriter('text-if1', 'Pata hai humse galti ho gaya aur aap gussa hai... par aapke bina bilkul achha nahi lagta. Ek baar ye pura  dekh lijiye please?');
       });
     }
 
