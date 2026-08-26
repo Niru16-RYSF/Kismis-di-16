@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Quantum Core // To Didi ✨🌌</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Orbitron:wght@400;600;800&family=Parisienne&family=Rajdhani:wght@400;600;700&family=Caveat:wght@600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --q-core: #ff007f;
+      --q-cyan: #00f0ff;
+      --q-gold: #ffd700;
+      --q-violet: #a855f7;
+      --q-bg: #030008;
+      --q-glass: rgba(18, 5, 28, 0.75);
+      --q-border: rgba(255, 0, 127, 0.45);
+      --audio-glow-intensity: 0px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: #030008;
+      min-height: 100vh;
+      font-family: 'Rajdhani', sans-serif;
+      color: #ffffff;
+      overflow-x: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: clamp(12px, 3vw, 24px);
+      position: relative;
+      touch-action: pan-y;
+      perspective: 1200px;
+    }
+
+    /* Ambient Quantum Field Canvas */
+    #quantumCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Scanlines HUD Grid Effect */
+    .hud-scanlines {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+      background-size: 100% 4px, 6px 100%;
+      pointer-events: none;
+      z-index: 2;
+      opacity: 0.6;
+    }
+
+    .container {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 580px;
+      margin: auto;
+      transform-style: preserve-3d;
+    }
+
+    /* Quantum HUD Card */
+    .glass-card {
+      background: var(--q-glass);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-radius: clamp(20px, 4vw, 30px);
+      padding: clamp(24px, 5vw, 36px) clamp(18px, 4vw, 28px);
+      box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.9), 
+        0 0 35px rgba(255, 0, 127, 0.25),
+        inset 0 0 20px rgba(0, 240, 255, 0.15);
+      border: 1px solid var(--q-border);
+      text-align: center;
+      position: relative;
+      max-height: 88vh;
+      overflow-y: auto;
+      transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      scrollbar-width: thin;
+      scrollbar-color: var(--q-core) transparent;
+    }
+
+    .glass-card::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: inherit;
+      padding: 2px;
+      background: linear-gradient(135deg, var(--q-core), var(--q-cyan), var(--q-violet), var(--q-gold));
+      background-size: 300% 300%;
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      animation: quantumBorder 6s ease infinite;
+      pointer-events: none;
+    }
+
+    @keyframes quantumBorder {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .card-fade-out {
+      opacity: 0;
+      transform: scale(0.9) translateY(-30px);
+      pointer-events: none;
+    }
+
+    .card-fade-in {
+      animation: quantumEntry 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    @keyframes quantumEntry {
+      0% { opacity: 0; transform: scale(0.85) translateY(40px); filter: blur(8px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
+    }
+
+    /* Telemetry Data Pill */
+    .hud-tag {
+      display: inline-block;
+      font-family: 'Orbitron', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 20px;
+      background: rgba(0, 240, 255, 0.12);
+      border: 1px solid rgba(0, 240, 255, 0.5);
+      color: var(--q-cyan);
+      margin-bottom: 12px;
+      box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+    }
+
+    .title-main {
+      font-family: 'Cinzel Decorative', cursive;
+      font-size: clamp(1.5rem, 4vw, 2.2rem);
+      background: linear-gradient(45deg, #ffffff, var(--q-cyan), var(--q-core), var(--q-gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+      line-height: 1.3;
+      text-shadow: 0 0 20px rgba(255, 0, 127, 0.5);
+      cursor: pointer;
+    }
+
+    .cursive-text {
+      font-family: 'Parisienne', cursive;
+      font-size: clamp(1.9rem, 5vw, 2.6rem);
+      color: #ffd1dc;
+      margin: 6px 0;
+      text-shadow: 0 0 18px rgba(255, 0, 127, 0.8);
+    }
+
+    .message-body {
+      font-size: clamp(0.92rem, 2vw, 1.05rem);
+      line-height: 1.7;
+      color: rgba(255, 255, 255, 0.9);
+      margin: 16px 0;
+      font-weight: 400;
+    }
+
+    .quantum-box {
+      background: rgba(10, 2, 16, 0.85);
+      border-radius: 18px;
+      padding: clamp(16px, 3vw, 22px);
+      text-align: left;
+      font-size: clamp(0.88rem, 2vw, 0.98rem);
+      line-height: 1.8;
+      margin: 16px 0;
+      border-left: 4px solid var(--q-cyan);
+      border-right: 1px solid rgba(255, 0, 127, 0.4);
+      color: #fce8f3;
+      box-shadow: inset 0 2px 20px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 240, 255, 0.15);
+      white-space: pre-line;
+    }
+
+    /* 3D Hologram Unfolding Message */
+    .holo-unfold-container {
+      perspective: 1000px;
+      margin: 14px 0;
+    }
+
+    .holo-unfold {
+      transform-origin: top center;
+      animation: holoUnfold 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+      background: linear-gradient(175deg, rgba(30, 2, 25, 0.95), rgba(12, 1, 18, 0.95));
+      border: 1px solid var(--q-cyan);
+      box-shadow: 0 0 30px rgba(0, 240, 255, 0.3);
+    }
+
+    @keyframes holoUnfold {
+      0% { opacity: 0; transform: rotateX(-80deg) scale(0.8); filter: brightness(3); }
+      100% { opacity: 1; transform: rotateX(0deg) scale(1); filter: brightness(1); }
+    }
+
+    .highlight-quote {
+      font-style: italic;
+      color: var(--q-gold);
+      display: block;
+      margin: 12px 0;
+      font-size: clamp(0.92rem, 2vw, 1.05rem);
+    }
+
+    .pass-input {
+      width: 85%;
+      max-width: 290px;
+      padding: 14px 20px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1rem;
+      text-align: center;
+      letter-spacing: 2px;
+      border-radius: 30px;
+      border: 2px solid rgba(0, 240, 255, 0.5);
+      background: rgba(0, 240, 255, 0.08);
+      color: #ffffff;
+      outline: none;
+      margin: 18px auto 8px auto;
+      display: block;
+      transition: all 0.3s ease;
+    }
+
+    .pass-input:focus {
+      border-color: var(--q-core);
+      box-shadow: 0 0 25px rgba(255, 0, 127, 0.8);
+      background: rgba(255, 0, 127, 0.15);
+    }
+
+    .pass-input.shake-error {
+      animation: quantumShake 0.4s ease;
+      border-color: #ff0044 !important;
+      box-shadow: 0 0 25px rgba(255, 0, 68, 0.9) !important;
+    }
+
+    @keyframes quantumShake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-10px); }
+      40%, 80% { transform: translateX(10px); }
+    }
+
+    /* Buttons */
+    .btn-main {
+      background: linear-gradient(135deg, var(--q-core), var(--q-violet), var(--q-cyan));
+      background-size: 200% 200%;
+      color: #ffffff;
+      font-family: 'Orbitron', sans-serif;
+      letter-spacing: 1px;
+      border: none;
+      outline: none;
+      padding: 14px 34px;
+      font-size: clamp(0.85rem, 2vw, 0.95rem);
+      font-weight: 700;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 0 25px rgba(255, 0, 127, 0.6);
+      margin-top: 14px;
+      transition: all 0.3s ease;
+      display: inline-block;
+    }
+
+    .btn-main:hover {
+      transform: translateY(-2px) scale(1.04);
+      box-shadow: 0 0 35px rgba(0, 240, 255, 0.8);
+      background-position: right center;
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(0, 240, 255, 0.5);
+      font-family: 'Orbitron', sans-serif;
+      color: var(--q-cyan);
+      padding: 10px 24px;
+      font-size: 0.85rem;
+      border-radius: 50px;
+      cursor: pointer;
+      margin: 8px 6px;
+      transition: all 0.2s;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(0, 240, 255, 0.2);
+      box-shadow: 0 0 18px rgba(0, 240, 255, 0.5);
+    }
+
+    /* 3D Origami Prism Cards */
+    .origami-grid {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin: 22px 0;
+      perspective: 800px;
+    }
+
+    .origami-heart-card {
+      background: linear-gradient(135deg, rgba(255, 0, 127, 0.25), rgba(0, 240, 255, 0.15));
+      border: 1.5px solid rgba(0, 240, 255, 0.6);
+      border-radius: 20px;
+      padding: 14px 12px;
+      width: 110px;
+      cursor: pointer;
+      text-align: center;
+      transform-style: preserve-3d;
+      transform: translateZ(20px) rotateY(-8deg);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6), 0 0 15px rgba(0, 240, 255, 0.3);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .origami-heart-card:nth-child(2) {
+      transform: translateZ(20px) rotateY(8deg);
+    }
+
+    .origami-heart-card:hover {
+      transform: translateZ(45px) rotateY(0deg) scale(1.12);
+      box-shadow: 0 0 30px rgba(255, 0, 127, 0.8);
+      border-color: var(--q-core);
+    }
+
+    .origami-icon {
+      font-size: 2.2rem;
+      display: block;
+      filter: drop-shadow(0 0 10px var(--q-core));
+    }
+
+    .origami-label {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.75rem;
+      letter-spacing: 1px;
+      color: var(--q-gold);
+      margin-top: 6px;
+      display: block;
+    }
+
+    /* 3D Hologram Polaroids */
+    .corner-gallery {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: clamp(12px, 3.5vw, 20px);
+      margin: 24px 0;
+      perspective: 1000px;
+    }
+
+    .polaroid-wrapper {
+      position: relative;
+      background: #ffffff;
+      padding: 8px 8px 14px 8px;
+      border-radius: 14px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7), 0 0 20px rgba(0, 240, 255, 0.4);
+      cursor: pointer;
+      width: 100%;
+      max-width: 190px;
+      margin: auto;
+      transform-style: preserve-3d;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .polaroid-wrapper:hover {
+      transform: translateZ(40px) scale(1.1) rotateX(4deg) rotateY(-4deg) !important;
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.9), 0 0 35px rgba(255, 0, 127, 0.9);
+      z-index: 10;
+    }
+
+    .photo-container {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #11021b;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .polaroid-photo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .polaroid-caption {
+      font-family: 'Caveat', cursive;
+      font-size: 1.05rem;
+      color: #111;
+      text-align: center;
+      margin-top: 8px;
+      display: block;
+      font-weight: 700;
+    }
+
+    .polaroid-wrapper.tl { transform: rotate(-5deg) translateZ(10px); }
+    .polaroid-wrapper.tr { transform: rotate(5deg) translateZ(20px); }
+    .polaroid-wrapper.bl { transform: rotate(4deg) translateZ(15px); }
+    .polaroid-wrapper.br { transform: rotate(-4deg) translateZ(25px); }
+
+    /* Modals */
+    .quantum-modal {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(3, 0, 8, 0.88);
+      backdrop-filter: blur(14px);
+      z-index: 10000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      padding: 20px;
+    }
+
+    .quantum-modal.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .quantum-modal-content {
+      background: #fffdf5;
+      color: #3b0229;
+      padding: 28px 24px;
+      border-radius: 22px;
+      width: 100%;
+      max-width: 360px;
+      text-align: center;
+      box-shadow: 0 0 50px rgba(255, 0, 127, 0.9);
+      transform: scale(0.7);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .quantum-modal.active .quantum-modal-content {
+      transform: scale(1);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="hud-scanlines"></div>
+  <canvas id="quantumCanvas"></canvas>
+
+  <audio id="bgMusic1" preload="auto">
+    <source src="song1.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="bgMusic2" preload="auto">
+    <source src="song2.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Modals -->
+  <div id="lightbox" class="quantum-modal" onclick="closeLightbox()">
+    <div class="quantum-modal-content" style="max-width: 90vw; background: #fff; padding: 14px;" onclick="event.stopPropagation()">
+      <img id="lightboxImg" src="" alt="Memory" style="max-width: 100%; max-height: 65vh; border-radius: 10px; object-fit: contain;" />
+      <div id="lightboxCap" style="font-family:'Caveat', cursive; font-size:1.45rem; color:#111; margin-top:10px; font-weight:700;"></div>
+    </div>
+  </div>
+
+  <div id="origamiModal" class="quantum-modal" onclick="closeOrigamiNote()">
+    <div class="quantum-modal-content" onclick="event.stopPropagation()">
+      <span style="font-size: 2.4rem; display: block; margin-bottom: 8px;">💌✨</span>
+      <p id="origamiNoteText" style="font-family:'Caveat', cursive; font-size: 1.3rem; line-height: 1.5;"></p>
+      <button class="btn-main" style="padding: 8px 24px; margin-top: 16px;" onclick="closeOrigamiNote()">Acknowledge 💖</button>
+    </div>
+  </div>
+
+  <div class="container" id="cardContainer">
+    <!-- Lock Screen -->
+    <div id="lockScreen" class="glass-card card-fade-in">
+      <div class="hud-tag">Quantum Encryption // Locked</div>
+      <h1 class="title-main" onclick="handleTitleTap()">Secret Gift 🔐✨</h1>
+      <div class="cursive-text">Only For Didi 🌙</div>
+      <p class="message-body">
+        Enter the secret passcode to initialize quantum decryption:
+      </p>
+      
+      <input type="password" id="passwordInput" class="pass-input" placeholder="PASSCODE..." onkeypress="handleKey(event)" />
+      <button class="btn-main" onclick="checkPassword()">Unlock Surprise 💖</button>
+    </div>
+
+    <!-- Interface 1 -->
+    <div id="interface1" class="glass-card hidden">
+      <div class="hud-tag">Memory Core // Syncing</div>
+      <h1 class="title-main" onclick="handleTitleTap()">To My Kismis Didi ✨</h1>
+      <div class="cursive-text">Ek Choti Si Request 🌙</div>
+      <span class="highlight-quote">"Humse gussa hoke kahan jayenge? Manana to hmko hi padega! ✨"</span>
+      <p class="message-body" id="text-if1"></p>
+      <button class="btn-main" onclick="goToInterface2()">To Kismis didi ✨️🌙❤️</button>
+    </div>
+
+    <!-- Interface 2 -->
+    <div id="interface2" class="glass-card hidden">
+      <div class="hud-tag">Entanglement Array // Active</div>
+      <div class="title-main">Kismis Didi</div>
+      <div class="cursive-text">suniye na.... 🌸💖</div>
+      
+      <div class="origami-grid">
+        <div class="origami-heart-card" onclick="openOrigamiNote('promise')">
+          <span class="origami-icon">💖</span>
+          <span class="origami-label">Promise</span>
+        </div>
+        <div class="origami-heart-card" onclick="openOrigamiNote('wish')">
+          <span class="origami-icon">✨</span>
+          <span class="origami-label">Secret Wish</span>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 15px;" id="interface2Btns">
+        <button class="btn-main" onclick="goToInterface3()">1. Sunn lete h ✨</button>
+        <button class="btn-secondary" id="nhiSunnaBtn" onclick="handleNhiSunna()">2. Nhi sunna 🌸</button>
+      </div>
+
+      <div class="hidden" id="sunnaPadegaBox" style="margin-top: 15px;">
+        <div style="font-size: 2rem;">⬆️</div>
+        <div style="font-size: 1.15rem; font-weight: 700; color: #ffd1dc; text-shadow: 0 0 15px var(--q-core);">
+          Sunna to padega 😂🤣
+        </div>
+      </div>
+    </div>
+
+    <!-- Interface 3 -->
+    <div id="interface3" class="glass-card hidden">
+      <div class="hud-tag">Direct Transmission</div>
+      <div class="title-main">Dearest Didi ❤️</div>
+
+      <div class="quantum-box">Sorry didi...
+Aisa bilkul bhi nhi h jaisa aap soch rhe h...uss din bol diye the n wo ...ha maante h nhi bolna chahiye tha..sirf aap bheje the to aap hi deserve krti h .Par abhi tk gussa kyuu.. ek hi baat le k kyu baithe rehte h...chota bhai ko maaf kr dijiye n pilizzz🥺</div>
+
+      <button class="btn-secondary" id="readMoreBtn" onclick="showReadMore()" style="margin-bottom: 15px;">Decouple Logs 📜🌸</button>
+
+      <div class="holo-unfold-container hidden" id="readMoreContainer">
+        <div class="quantum-box holo-unfold">Aap aise kyu bolte h ki tumhaari pyaari behen sb h wo log ...aap nhi h ky ?
+Infact aap to unn sab me se ..the bessttt h sabse pyaari✨️✨️ aapko lagega jhuth bol rhe h par sachhii me.
+Aise gussa thodi n hote h ...ab se aisa nhi hoga pakkka 🤞
+
+Apna aur apne health ka dhyan rakhiye aur time pe khana aur dwai kha liya kariye, aur reels dekhna bhi km kr dijiye.
+
+(Aur taunt na mara kariye ..🙂 plsss)
+
+Thank youuuù
+Byeeeeeee
+Good night✨️✨️</div>
+      </div>
+
+      <div style="position:relative; min-height:120px; display:flex; justify-content:center; align-items:center; gap:15px; margin-top:15px;" id="decisionArea">
+        <button class="btn-main" style="background: linear-gradient(135deg, #00b09b, #96c93d);" onclick="openEnvelopeStage()">Haan, Maan Gayi! 💖</button>
+        <button class="btn-secondary" id="runawayBtn" style="background: linear-gradient(135deg, #ff416c, #ff4b2b); color:#fff;" onmouseover="dodgeButton()" onclick="dodgeButton()" ontouchstart="dodgeButton()">Nahi 😤</button>
+      </div>
+    </div>
+
+    <!-- Envelope Interface -->
+    <div id="envelopeScreen" class="glass-card hidden">
+      <div class="hud-tag">Hyper-Transmission Encrypted</div>
+      <h1 class="title-main" onclick="handleTitleTap()">Special Delivery 💌✨</h1>
+      <div class="cursive-text">Unseal Your Surprise 🌙</div>
+      <p class="message-body">
+        Aapke liye ek special heartfelt envelope hai. Tap the royal seal to break it open!
+      </p>
+      <div style="margin: 25px 0; cursor:pointer;" onclick="unsealFinalEnvelope()">
+        <div id="waxSealIcon" style="font-size: 4rem; filter: drop-shadow(0 0 20px var(--q-core)); transition: transform 0.4s;">⚜️</div>
+        <span class="highlight-quote" style="margin-top: 10px;">Tap Seal to Unseal 💖</span>
+      </div>
+    </div>
+
+    <!-- Interface 4 -->
+    <div id="finalScreen" class="glass-card hidden">
+      <div class="hud-tag">Matrix Resonance // 100%</div>
+      <h1 class="title-main" onclick="handleTitleTap()">Always Shining ✨🌙</h1>
+
+      <div class="corner-gallery" id="polaroidGallery">
+        <div class="polaroid-wrapper tl" onclick="openLightbox('pic1.jpeg', 'Best Smile Ever ✨')">
+          <div class="photo-container"><img src="pic1.jpeg" alt="Memory 1" class="polaroid-photo" /></div>
+          <span class="polaroid-caption">Best Smile Ever ✨</span>
+        </div>
+        <div class="polaroid-wrapper tr" onclick="openLightbox('pic2.jpeg', 'Sweet Guide 🌸')">
+          <div class="photo-container"><img src="pic2.jpeg" alt="Memory 2" class="polaroid-photo" /></div>
+          <span class="polaroid-caption">Sweet Guide 🌸</span>
+        </div>
+        <div class="polaroid-wrapper bl" onclick="openLightbox('pic3.jpeg', 'Unbreakable Bond ❤️')">
+          <div class="photo-container"><img src="pic3.jpeg" alt="Memory 3" class="polaroid-photo" /></div>
+          <span class="polaroid-caption">Unbreakable Bond ❤️</span>
+        </div>
+        <div class="polaroid-wrapper br" onclick="openLightbox('pic4.jpeg', 'Always Shining 🌙')">
+          <div class="photo-container"><img src="pic4.jpeg" alt="Memory 4" class="polaroid-photo" /></div>
+          <span class="polaroid-caption">Always Shining 🌙</span>
+        </div>
+      </div>
+
+      <span class="highlight-quote" style="font-size: 1.25rem; margin: 16px 0;">"You re the best one — Meri best di! 💖🌸"</span>
+      <p class="message-body" id="text-if4"></p>
+      <button class="btn-secondary" onclick="restartJourney()">Replay Sequence ↺</button>
+    </div>
+  </div>
+
+  <script>
+    const SECRET_CODE = "madhukumari";
+
+    const music1 = document.getElementById('bgMusic1');
+    const music2 = document.getElementById('bgMusic2');
+
+    const song1Start = 93;
+    const song1End = 116;
+    const song2Start = 137;
+    const song2End = 171;
+
+    let isSong1Playing = false;
+    let isTesseractActive = false;
+
+    // Web Audio Synthesizer
+    const AudioCtxClass = window.AudioContext || window.webkitAudioContext;
+    let audioCtx = null;
+
+    function getAudioContext() {
+      if (!audioCtx) audioCtx = new AudioCtxClass();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      return audioCtx;
+    }
+
+    function playQuantumChime() {
+      try {
+        const ctx = getAudioContext();
+        const chord = [523.25, 659.25, 783.99, 1046.50, 1318.51];
+        chord.forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.04);
+          gain.gain.setValueAtTime(0.06, ctx.currentTime + idx * 0.04);
+          gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + idx * 0.04 + 0.8);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(ctx.currentTime + idx * 0.04);
+          osc.stop(ctx.currentTime + idx * 0.04 + 0.8);
+        });
+      } catch (e) {}
+    }
+
+    function typeWriter(elementId, text, speed = 25, callback = null) {
+      const el = document.getElementById(elementId);
+      if (!el) return;
+      el.innerHTML = '';
+      let i = 0;
+      function type() {
+        if (i < text.length) {
+          el.innerHTML += text.charAt(i);
+          i++;
+          setTimeout(type, speed);
+        } else if (callback) callback();
+      }
+      type();
+    }
+
+    function playSong1() {
+      if (!isSong1Playing && music1) {
+        getAudioContext();
+        music1.volume = 1;
+        music1.currentTime = song1Start;
+        music1.play().catch(() => {});
+        isSong1Playing = true;
+        music1.ontimeupdate = () => {
+          if (music1.currentTime >= song1End) music1.currentTime = song1Start;
+        };
+      }
+    }
+
+    function switchScreen(fromId, toId, callback = null) {
+      const fromEl = document.getElementById(fromId);
+      const toEl = document.getElementById(toId);
+      fromEl.classList.add('card-fade-out');
+      setTimeout(() => {
+        fromEl.classList.add('hidden');
+        fromEl.classList.remove('card-fade-out');
+        toEl.classList.remove('hidden');
+        toEl.classList.add('card-fade-in');
+        if (callback) callback();
+      }, 350);
+    }
+
+    function checkPassword() {
+      const inputEl = document.getElementById('passwordInput');
+      if (inputEl.value.trim().toLowerCase() === SECRET_CODE) {
+        playQuantumChime();
+        playSong1();
+        switchScreen('lockScreen', 'interface1', () => {
+          typeWriter('text-if1', 'Pata hai humse galti ho gya aur aap gussa hai... par aapke bina bilkul achha nahi lagta. Ek baar ye pura dekh lijiye please?');
+        });
+      } else {
+        inputEl.classList.add('shake-error');
+        inputEl.value = '';
+        setTimeout(() => inputEl.classList.remove('shake-error'), 400);
+      }
+    }
+
+    function handleKey(e) {
+      if (e.key === "Enter") checkPassword();
+    }
+
+    function goToInterface2() {
+      playSong1();
+      playQuantumChime();
+      isTesseractActive = true;
+      switchScreen('interface1', 'interface2');
+    }
+
+    function handleNhiSunna() {
+      document.getElementById('nhiSunnaBtn').classList.add('hidden');
+      document.getElementById('sunnaPadegaBox').classList.remove('hidden');
+    }
+
+    function goToInterface3() {
+      playQuantumChime();
+      switchScreen('interface2', 'interface3');
+    }
+
+    function showReadMore() {
+      playQuantumChime();
+      document.getElementById('readMoreContainer').classList.remove('hidden');
+      document.getElementById('readMoreBtn').classList.add('hidden');
+    }
+
+    function dodgeButton() {
+      const btn = document.getElementById('runawayBtn');
+      const container = document.getElementById('decisionArea');
+      const maxX = container.clientWidth - btn.offsetWidth - 10;
+      const maxY = container.clientHeight - btn.offsetHeight - 10;
+      btn.style.position = 'absolute';
+      btn.style.left = Math.max(10, Math.floor(Math.random() * maxX)) + 'px';
+      btn.style.top = Math.max(10, Math.floor(Math.random() * maxY)) + 'px';
+    }
+
+    function openEnvelopeStage() {
+      playQuantumChime();
+      switchScreen('interface3', 'envelopeScreen');
+    }
+
+    function unsealFinalEnvelope() {
+      playQuantumChime();
+      document.getElementById('waxSealIcon').style.transform = 'scale(2) rotate(45deg)';
+      document.getElementById('waxSealIcon').style.opacity = '0';
+      setTimeout(() => {
+        crossfadeToSong2();
+        switchScreen('envelopeScreen', 'finalScreen', () => {
+          typeWriter('text-if4', 'Promise karte hai aage se aisa kbhi nhi karenge. Always stay blessed, happy, and smiling!');
+        });
+      }, 450);
+    }
+
+    function crossfadeToSong2() {
+      if (music1) {
+        music1.pause();
+        isSong1Playing = false;
+      }
+      if (music2) {
+        music2.currentTime = song2Start;
+        music2.play().catch(() => {});
+        music2.ontimeupdate = () => {
+          if (music2.currentTime >= song2End) music2.currentTime = song2Start;
+        };
+      }
+    }
+
+    function restartJourney() {
+      if (music2) music2.pause();
+      isTesseractActive = false;
+      document.getElementById('readMoreContainer').classList.add('hidden');
+      document.getElementById('readMoreBtn').classList.remove('hidden');
+      document.getElementById('waxSealIcon').style.transform = 'scale(1) rotate(0deg)';
+      document.getElementById('waxSealIcon').style.opacity = '1';
+      playSong1();
+      switchScreen('finalScreen', 'interface1', () => {
+        typeWriter('text-if1', 'Pata hai humse galti ho gya aur aap gussa hai... par aapke bina bilkul achha nahi lagta. Ek baar ye pura dekh lijiye please?');
+      });
+    }
+
+    const origamiNotes = {
+      promise: "Didi Promise: Aage se kabhi bina soche gussa nahi dilayenge, aur hamesha aapki har baat dhyan se sunenge! 💖✨",
+      wish: "Secret Wish: Aap hamesha har din khilkhilati raho aur jo chaho wo aapko mile! Always keep smiling and shining Didi! 🌙✨"
+    };
+
+    function openOrigamiNote(type) {
+      playQuantumChime();
+      document.getElementById('origamiNoteText').innerText = origamiNotes[type];
+      document.getElementById('origamiModal').classList.add('active');
+    }
+
+    function closeOrigamiNote() {
+      document.getElementById('origamiModal').classList.remove('active');
+    }
+
+    function openLightbox(src, caption) {
+      document.getElementById('lightboxImg').src = src;
+      document.getElementById('lightboxCap').innerText = caption;
+      document.getElementById('lightbox').classList.add('active');
+    }
+
+    function closeLightbox() {
+      document.getElementById('lightbox').classList.remove('active');
+    }
+
+    // Dynamic Image Extension Fallback
+    document.querySelectorAll('img').forEach(img => {
+      const srcBase = img.getAttribute('src').replace(/\.[^/.]+$/, "");
+      const extensions = ['jpeg', 'jpg', 'png', 'JPG', 'PNG'];
+      let extIndex = 0;
+      img.onerror = function() {
+        extIndex++;
+        if (extIndex < extensions.length) img.src = srcBase + '.' + extensions[extIndex];
+      };
+    });
+
+    // 4D Tesseract and Quantum Entanglement Simulation
+    const canvas = document.getElementById('quantumCanvas');
+    const ctx = canvas.getContext('2d');
+    let width, height;
+
+    function resizeCanvas() {
+      const dpr = window.devicePixelRatio || 1;
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      ctx.scale(dpr, dpr);
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class QuantumParticle {
+      constructor() {
+        this.x = Math.random() * width;
+        this.y = Math.random() * height;
+        this.vx = (Math.random() - 0.5) * 1.2;
+        this.vy = (Math.random() - 0.5) * 1.2;
+        this.radius = Math.random() * 2 + 1;
+        this.hue = Math.random() > 0.5 ? 330 : 190;
+      }
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        if (this.x < 0 || this.x > width) this.vx *= -1;
+        if (this.y < 0 || this.y > height) this.vy *= -1;
+      }
+      draw() {
+        ctx.fillStyle = `hsl(${this.hue}, 100%, 75%)`;
+        ctx.shadowColor = `hsl(${this.hue}, 100%, 50%)`;
+        ctx.shadowBlur = 8;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    const qParticles = Array.from({ length: 45 }, () => new QuantumParticle());
+
+    let rotX = 0, rotY = 0;
+    function drawTesseract() {
+      const size = 70;
+      const vertices = [
+        [-1,-1,-1], [1,-1,-1], [1,1,-1], [-1,1,-1],
+        [-1,-1,1], [1,-1,1], [1,1,1], [-1,1,1]
+      ];
+      const edges = [
+        [0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],
+        [0,4],[1,5],[2,6],[3,7]
+      ];
+
+      rotX += 0.01;
+      rotY += 0.015;
+
+      const projected = vertices.map(([x, y, z]) => {
+        let x1 = x * Math.cos(rotY) + z * Math.sin(rotY);
+        let z1 = -x * Math.sin(rotY) + z * Math.cos(rotY);
+        let y2 = y * Math.cos(rotX) - z1 * Math.sin(rotX);
+        let z2 = y * Math.sin(rotX) + z1 * Math.cos(rotX);
+        const fov = 300;
+        const depth = fov / (fov + z2 * 50 + 200);
+        return {
+          x: width / 2 + x1 * size * depth,
+          y: height / 2 + y2 * size * depth
+        };
+      });
+
+      ctx.strokeStyle = 'rgba(0, 240, 255, 0.4)';
+      ctx.lineWidth = 1.5;
+      ctx.shadowBlur = 12;
+      ctx.shadowColor = '#00f0ff';
+
+      edges.forEach(([i, j]) => {
+        ctx.beginPath();
+        ctx.moveTo(projected[i].x, projected[i].y);
+        ctx.lineTo(projected[j].x, projected[j].y);
+        ctx.stroke();
+      });
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, width, height);
+
+      // Entanglement filaments
+      for (let i = 0; i < qParticles.length; i++) {
+        qParticles[i].update();
+        qParticles[i].draw();
+
+        for (let j = i + 1; j < qParticles.length; j++) {
+          const dx = qParticles[i].x - qParticles[j].x;
+          const dy = qParticles[i].y - qParticles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < 110) {
+            ctx.strokeStyle = `rgba(255, 0, 127, ${1 - dist / 110})`;
+            ctx.lineWidth = 0.8;
+            ctx.beginPath();
+            ctx.moveTo(qParticles[i].x, qParticles[i].y);
+            ctx.lineTo(qParticles[j].x, qParticles[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      if (isTesseractActive) drawTesseract();
+      requestAnimationFrame(animate);
+    }
+    animate();
+  </script>
+</body>
+</html>
+
