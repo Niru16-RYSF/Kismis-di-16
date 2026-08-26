@@ -913,9 +913,9 @@ Good night✨️✨️</div>
     const song2End = 171;
 
     let isSong1Playing = false;
-    let isPetalCelebrationActive = false;
+    let isPetalCelebrationActive = true;
     let isNameFormationActive = true; // Controls the "Madhumita" name assembly effect
-    let nameFormationTimer = 3;
+    let nameFormationTimer = 5;
 
     // Time-Based Sibling Greeting
     function updateTimeBasedGreeting() {
@@ -1199,7 +1199,7 @@ Good night✨️✨️</div>
       
       // Activate Madhumita name formation assembly for butterflies
       isNameFormationActive = true;
-      nameFormationTimer = 0;
+      nameFormationTimer = 5;
       setTimeout(() => {
         isNameFormationActive = false;
       }, 3500); // lasts for 3.5 seconds
@@ -1414,7 +1414,7 @@ Good night✨️✨️</div>
       return targets;
     }
 
-    const butterflyCount = 22;
+    const butterflyCount = 50;
     const targets = generateMadhumitaTargets(butterflyCount);
     const butterflies = Array.from({ length: butterflyCount }, (_, i) => new Butterfly(targets[i].x, targets[i].y));
 
