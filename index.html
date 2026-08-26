@@ -902,7 +902,7 @@ Good night✨️✨️</div>
   </div>
 
   <script>
-    const SECRET_CODE = "madhu";
+    const SECRET_CODE = "madhukumari";
 
     const music1 = document.getElementById('bgMusic1');
     const music2 = document.getElementById('bgMusic2');
@@ -914,8 +914,8 @@ Good night✨️✨️</div>
 
     let isSong1Playing = false;
     let isPetalCelebrationActive = false;
-    let isNameFormationActive = false; // Controls the "Madhumita" name assembly effect
-    let nameFormationTimer = 0;
+    let isNameFormationActive = true; // Controls the "Madhumita" name assembly effect
+    let nameFormationTimer = 3;
 
     // Time-Based Sibling Greeting
     function updateTimeBasedGreeting() {
@@ -925,7 +925,7 @@ Good night✨️✨️</div>
       if (hours >= 5 && hours < 12) greeting = "Good Morning Didi ☀️";
       else if (hours >= 12 && hours < 17) greeting = "Good Afternoon Didi 🌸";
       else if (hours >= 17 && hours < 22) greeting = "Good Evening Didi 🌙";
-      else greeting = "Late Night Scrolling Didi? 🌙✨";
+      else greeting = "Late Night Scrolling Di? 🌙✨";
       
       const tag = document.getElementById('timeBasedTag');
       if (tag) tag.innerText = greeting;
